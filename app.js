@@ -3,10 +3,10 @@ const mysql = require('mysql');
 const cors = require('cors');
 
 const app = express();
-const port = 3000;
+const port = 3306;
 
 const connection = mysql.createConnection({
-  host: 'localhost',
+  host: '192.168.0.6',
   user: 'root',
   password: 'ferrero441',
   database: 'produtosdb'
