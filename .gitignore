@@ -1,0 +1,4 @@
+# Arquivos e diretórios do Node.js
+node_modules/
+package.json
+package-lock.json
