@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>webdamn.com : Demo Product Search Filtering using Ajax, PHP & MySQL</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">       
+</head>
+<body>
+    <div class="content"> 
+        <div class="container-fluid">
+            <h2>Example: Product Search Filtering using Ajax, PHP & MySQL</h2>
+            
+            <form method="post" id="search_form">
+                <div class="row">                    
+                    <aside class="col-lg-3 col-md-4">						
+                        <div class="panel list">
+                            <div class="panel-heading"><h3 class="panel-title" data-toggle="collapse" data-target="#panelOne" aria-expanded="true">Categories</h3></div>
+                            <div class="panel-body collapse in" id="panelOne">
+                                <ul class="list-group">
+                                    <!-- Categories list will be dynamically generated here -->
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="panel list">
+                            <div class="panel-heading"><h3 class="panel-title" data-toggle="collapse" data-target="#panelTwo" aria-expanded="true">Brand</h3></div>
+                            <div class="panel-body collapse in" id="panelTwo">
+                                <ul class="list-group">
+                                    <!-- Brands list will be dynamically generated here -->
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="panel list">
+                            <div class="panel-heading"><h3 class="panel-title" data-toggle="collapse" data-target="#panelThree" aria-expanded="true">Sort By</h3></div>
+                            <div class="panel-body collapse in" id="panelThree">
+                                <div class="radio">
+                                    <label><input type="radio" name="sorting" value="newest" class="sort_rang sorting"> Newest</label>
+                                </div>
+                                <div class="radio">
+                                    <label><input type="radio" name="sorting" value="low" class="sort_rang sorting"> Price: Low to High</label>
+                                </div>
+                                <div class="radio">
+                                    <label><input type="radio" name="sorting" value="high" class="sort_rang sorting"> Price: High to Low</label>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+                    <section class="col-lg-9 col-md-8">
+                        <div class="row">
+                            <div id="results"></div>
+                        </div>
+                    </section>
+                </div>
+                <input type="hidden" id="totalRecords" value="">
+            </form>
+        </div>        
+    </div>  
+    
+    <div class="loader" style="display: none;">Loading...</div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+        $(document).ready(function() {
+            var totalRecord = 0;
+            var totalData = $("#totalRecords").val();
+
+            $(window).scroll(function() {
+                var scrollHeight = $(window).scrollTop() + $(window).height();
+                if (scrollHeight == $(document).height()) {
+                    if (totalRecord <= totalData) {
+                        var category = getCheckboxValues('category');
+                        var brand = getCheckboxValues('brand');
+                        var material = getCheckboxValues('material');
+                        var size = getCheckboxValues('size');
+                        var sorting = $('input[name="sorting"]:checked').val();
+
+                        $('.loader').show();
+
+                        $.ajax({
+                            type: 'POST',
+                            url: "load_products.php",
+                            dataType: "json",
+                            data: {
+                                totalRecord: totalRecord,
+                                brand: brand,
+                                material: material,
+                                size: size,
+                                category: category,
+                                sorting: sorting
+                            },
+                            success: function(data) {
+                                $("#results").append(data.products);
+                                $('.loader').hide();
+                                totalRecord++;
+                            }
+                        });
+                    }
+                }
+            });
+
+            function getCheckboxValues(checkboxClass) {
+                var values = [];
+                $("input." + checkboxClass + ":checked").each(function() {
+                    values.push($(this).val());
+                });
+                return values;
+            }
+
+            $('.sort_rang').change(function() {
+                $("#search_form").submit();
+                return false;
+            });
+
+            $(document).on('click', 'label', function() {
+                if ($(this).find('input:checkbox:checked').length > 0) {
+                    $(this).addClass('active');
+                } else {
+                    $(this).removeClass('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

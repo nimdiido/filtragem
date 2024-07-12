@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listagem de Parafusos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Listagem de Parafusos</h1>
+
+        <!-- Filtros -->
+        <div class="filters">
+            <div class="filter-row">
+                <label for="nome-filter">Nome:</label>
+                <input type="text" id="nome-filter" autocomplete="off" placeholder="Filtrar por nome">
+            </div>
+
+            <div class="filter-row">
+                <label for="comprimento-filter">Comprimento:</label>
+                <select id="comprimento-filter">
+                    <option value="">Selecione um comprimento</option>
+                </select>
+
+                <label for="bitola-filter">Bitola:</label>
+                <select id="bitola-filter">
+                    <option value="">Selecione uma bitola</option>
+                </select>
+            </div>
+
+            <div class="filter-row">
+                <label for="acabamento-filter">Acabamento:</label>
+                <select id="acabamento-filter">
+                    <option value="">Selecione um acabamento</option>
+                </select>
+
+                <label for="modelo-filter">Modelo:</label>
+                <select id="modelo-filter">
+                    <option value="">Selecione um modelo</option>
+                </select>
+            </div>
+
+            <div class="filter-row">
+                <label for="rosca-filter">Rosca:</label>
+                <select id="rosca-filter">
+                    <option value="">Selecione uma rosca</option>
+                </select>
+
+                <label for="haste-filter">RI / RP:</label>
+                <select id="haste-filter">
+                    <option value="">Selecione uma forma de rosca</option>
+                </select>
+            </div>
+
+            <div class="filter-row">
+                <label for="material-filter">Material:</label>
+                <select id="material-filter">
+                    <option value="">Selecione um material</option>
+                </select>
+
+                <label for="classe-filter">Classe:</label>
+                <select id="classe-filter">
+                    <option value="">Selecione uma classe</option>
+                </select>
+            </div>
+        </div>
+
+        <button id="filtrar-btn">Filtrar</button>
+
+        <!-- Lista de Parafusos -->
+        <ul id="parafusos-list">
+            <!-- Os itens serão adicionados aqui -->
+        </ul>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const nomeFilter = document.getElementById('nome-filter');
+            const comprimentoFilter = document.getElementById('comprimento-filter');
+            const bitolaFilter = document.getElementById('bitola-filter');
+            const acabamentoFilter = document.getElementById('acabamento-filter');
+            const modeloFilter = document.getElementById('modelo-filter');
+            const roscaFilter = document.getElementById('rosca-filter');
+            const hasteFilter = document.getElementById('haste-filter');
+            const materialFilter = document.getElementById('material-filter');
+            const classeFilter = document.getElementById('classe-filter');
+
+            // buscar opções disponíveis do backend e preencher os dropdowns
+            function carregarOpcoes(url, dropdown) {
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(opcao => {
+                            const option = document.createElement('option');
+                            option.textContent = opcao;
+                            option.value = opcao;
+                            dropdown.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error(`Erro ao buscar opções de ${dropdown.id}:`, error);
+                    });
+            }
+
+            // opções disponíveis para cada dropdown
+            carregarOpcoes('http://localhost:3000/api/comprimentos', comprimentoFilter);
+            carregarOpcoes('http://localhost:3000/api/bitolas', bitolaFilter);
+            carregarOpcoes('http://localhost:3000/api/acabamentos', acabamentoFilter);
+            carregarOpcoes('http://localhost:3000/api/modelos', modeloFilter);
+            carregarOpcoes('http://localhost:3000/api/roscas', roscaFilter);
+            carregarOpcoes('http://localhost:3000/api/hastes', hasteFilter);
+            carregarOpcoes('http://localhost:3000/api/materiais', materialFilter);
+            carregarOpcoes('http://localhost:3000/api/classes', classeFilter);
+
+            // botão de filtrar
+            const filtrarBtn = document.getElementById('filtrar-btn');
+            filtrarBtn.addEventListener('click', () => {
+                const filtro = {
+                    nome: nomeFilter.value,
+                    comprimento: comprimentoFilter.value,
+                    bitola: bitolaFilter.value,
+                    acabamento: acabamentoFilter.value,
+                    modelo: modeloFilter.value,
+                    rosca: roscaFilter.value,
+                    haste: hasteFilter.value,
+                    material: materialFilter.value,
+                    classe: classeFilter.value
+                };
+
+                let url = `http://localhost:3000/api/parafusos?`;
+                if (filtro.nome) {
+                    url += `nome=${filtro.nome}&`;
+                }
+                if (filtro.comprimento) {
+                    url += `comprimento=${filtro.comprimento}&`;
+                }
+                if (filtro.bitola) {
+                    url += `bitola=${filtro.bitola}&`;
+                }
+                if (filtro.acabamento) {
+                    url += `acabamento=${filtro.acabamento}&`;
+                }
+                if (filtro.modelo) {
+                    url += `modelo=${filtro.modelo}&`;
+                }
+                if (filtro.rosca) {
+                    url += `rosca=${filtro.rosca}&`;
+                }
+                if (filtro.haste) {
+                    url += `haste=${filtro.haste}&`;
+                }
+                if (filtro.material) {
+                    url += `material=${filtro.material}&`;
+                }
+                if (filtro.classe) {
+                    url += `classe=${filtro.classe}&`;
+                }
+
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Não foi possível carregar os parafusos');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const parafusosList = document.getElementById('parafusos-list');
+                        parafusosList.innerHTML = '';
+
+                        data.forEach(parafuso => {
+                            const parafusoItem = document.createElement('li');
+                            parafusoItem.textContent = `${parafuso.referencia} — ${parafuso.nome}`;
+                            parafusosList.appendChild(parafusoItem);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Erro ao buscar parafusos:', error);
+                        const errorElement = document.createElement('p');
+                        errorElement.textContent = 'Erro ao carregar parafusos. Por favor, tente novamente mais tarde.';
+                        document.body.appendChild(errorElement);
+                    });
+            });
+        });
+    </script>
+</body>
+
+</html>
