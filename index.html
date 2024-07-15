@@ -88,9 +88,7 @@
             const hasteFilter = document.getElementById('haste-filter');
             const materialFilter = document.getElementById('material-filter');
             const classeFilter = document.getElementById('classe-filter');
-
-            const ipAddress = location.hostname;
-
+    
             function carregarOpcoes(url, dropdown) {
                 fetch(url)
                     .then(response => response.json())
@@ -106,16 +104,16 @@
                         console.error(`Erro ao buscar opções de ${dropdown.id}:`, error);
                     });
             }
-
-            carregarOpcoes(`http://${ipAddress}:3000/api/comprimentos`, comprimentoFilter);
-            carregarOpcoes(`http://${ipAddress}:3000/api/bitolas`, bitolaFilter);
-            carregarOpcoes(`http://${ipAddress}:3000/api/acabamentos`, acabamentoFilter);
-            carregarOpcoes(`http://${ipAddress}:3000/api/modelos`, modeloFilter);
-            carregarOpcoes(`http://${ipAddress}:3000/api/roscas`, roscaFilter);
-            carregarOpcoes(`http://${ipAddress}:3000/api/hastes`, hasteFilter);
-            carregarOpcoes(`http://${ipAddress}:3000/api/materiais`, materialFilter);
-            carregarOpcoes(`http://${ipAddress}:3000/api/classes`, classeFilter);
-
+    
+            carregarOpcoes('/api/comprimentos', comprimentoFilter);
+            carregarOpcoes('/api/bitolas', bitolaFilter);
+            carregarOpcoes('/api/acabamentos', acabamentoFilter);
+            carregarOpcoes('/api/modelos', modeloFilter);
+            carregarOpcoes('/api/roscas', roscaFilter);
+            carregarOpcoes('/api/hastes', hasteFilter);
+            carregarOpcoes('/api/materiais', materialFilter);
+            carregarOpcoes('/api/classes', classeFilter);
+    
             const filtrarBtn = document.getElementById('filtrar-btn');
             filtrarBtn.addEventListener('click', () => {
                 const filtro = {
@@ -129,8 +127,8 @@
                     material: materialFilter.value,
                     classe: classeFilter.value
                 };
-
-                let url = `http://${ipAddress}:3000/api/parafusos?`;
+    
+                let url = '/api/parafusos?';
                 if (filtro.nome) {
                     url += `nome=${filtro.nome}&`;
                 }
@@ -158,7 +156,7 @@
                 if (filtro.classe) {
                     url += `classe=${filtro.classe}&`;
                 }
-
+    
                 fetch(url)
                     .then(response => {
                         if (!response.ok) {
@@ -169,7 +167,7 @@
                     .then(data => {
                         const parafusosList = document.getElementById('parafusos-list');
                         parafusosList.innerHTML = '';
-
+    
                         data.forEach(parafuso => {
                             const parafusoItem = document.createElement('li');
                             parafusoItem.textContent = `${parafuso.referencia} — ${parafuso.nome}`;
