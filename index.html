@@ -89,7 +89,8 @@
             const materialFilter = document.getElementById('material-filter');
             const classeFilter = document.getElementById('classe-filter');
 
-            // buscar opções disponíveis do backend e preencher os dropdowns
+            const ipAddress = location.hostname;
+
             function carregarOpcoes(url, dropdown) {
                 fetch(url)
                     .then(response => response.json())
@@ -106,7 +107,6 @@
                     });
             }
 
-            // opções disponíveis para cada dropdown
             carregarOpcoes(`http://${ipAddress}:3000/api/comprimentos`, comprimentoFilter);
             carregarOpcoes(`http://${ipAddress}:3000/api/bitolas`, bitolaFilter);
             carregarOpcoes(`http://${ipAddress}:3000/api/acabamentos`, acabamentoFilter);
@@ -116,8 +116,6 @@
             carregarOpcoes(`http://${ipAddress}:3000/api/materiais`, materialFilter);
             carregarOpcoes(`http://${ipAddress}:3000/api/classes`, classeFilter);
 
-
-            // botão de filtrar
             const filtrarBtn = document.getElementById('filtrar-btn');
             filtrarBtn.addEventListener('click', () => {
                 const filtro = {
@@ -132,7 +130,7 @@
                     classe: classeFilter.value
                 };
 
-                let url = `http://localhost:3000/api/parafusos?`;
+                let url = `http://${ipAddress}:3000/api/parafusos?`;
                 if (filtro.nome) {
                     url += `nome=${filtro.nome}&`;
                 }

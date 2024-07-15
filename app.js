@@ -23,7 +23,6 @@ connection.connect(err => {
 
 app.use(cors());
 
-// Buscar parafusos filtrados
 app.get('/api/parafusos', (req, res) => {
   const { nome, comprimento, bitola, acabamento, modelo, rosca, haste, material, classe } = req.query;
   let query = 'SELECT * FROM parafusos WHERE 1';
@@ -68,7 +67,6 @@ app.get('/api/parafusos', (req, res) => {
   });
 });
 
-// Recuperar comprimentos disponíveis
 app.get('/api/comprimentos', (req, res) => {
   const query = 'SELECT DISTINCT comprimento FROM parafusos';
 
@@ -83,7 +81,6 @@ app.get('/api/comprimentos', (req, res) => {
   });
 });
 
-// Recuperar bitolas disponíveis
 app.get('/api/bitolas', (req, res) => {
   const query = 'SELECT DISTINCT bitola FROM parafusos';
 
@@ -98,7 +95,6 @@ app.get('/api/bitolas', (req, res) => {
   });
 });
 
-// Recuperar acabamentos disponíveis
 app.get('/api/acabamentos', (req, res) => {
   const query = 'SELECT DISTINCT acabamento FROM parafusos';
 
@@ -113,7 +109,6 @@ app.get('/api/acabamentos', (req, res) => {
   });
 });
 
-// Recuperar modelos disponíveis
 app.get('/api/modelos', (req, res) => {
   const query = 'SELECT DISTINCT modelo FROM parafusos';
 
