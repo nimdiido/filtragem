@@ -89,7 +89,7 @@
             const materialFilter = document.getElementById('material-filter');
             const classeFilter = document.getElementById('classe-filter');
 
-            const ngrokUrl = 'https://abcd1234.ngrok.io'; // Substitua pela URL do ngrok
+            const apiUrl = '/api'; // O Vercel irá resolver isso automaticamente
 
             function carregarOpcoes(url, dropdown) {
                 fetch(url)
@@ -107,14 +107,14 @@
                     });
             }
 
-            carregarOpcoes(`${ngrokUrl}/api/comprimentos`, comprimentoFilter);
-            carregarOpcoes(`${ngrokUrl}/api/bitolas`, bitolaFilter);
-            carregarOpcoes(`${ngrokUrl}/api/acabamentos`, acabamentoFilter);
-            carregarOpcoes(`${ngrokUrl}/api/modelos`, modeloFilter);
-            carregarOpcoes(`${ngrokUrl}/api/roscas`, roscaFilter);
-            carregarOpcoes(`${ngrokUrl}/api/hastes`, hasteFilter);
-            carregarOpcoes(`${ngrokUrl}/api/materiais`, materialFilter);
-            carregarOpcoes(`${ngrokUrl}/api/classes`, classeFilter);
+            carregarOpcoes(`${apiUrl}/comprimentos`, comprimentoFilter);
+            carregarOpcoes(`${apiUrl}/bitolas`, bitolaFilter);
+            carregarOpcoes(`${apiUrl}/acabamentos`, acabamentoFilter);
+            carregarOpcoes(`${apiUrl}/modelos`, modeloFilter);
+            carregarOpcoes(`${apiUrl}/roscas`, roscaFilter);
+            carregarOpcoes(`${apiUrl}/hastes`, hasteFilter);
+            carregarOpcoes(`${apiUrl}/materiais`, materialFilter);
+            carregarOpcoes(`${apiUrl}/classes`, classeFilter);
 
             const filtrarBtn = document.getElementById('filtrar-btn');
             filtrarBtn.addEventListener('click', () => {
@@ -130,7 +130,7 @@
                     classe: classeFilter.value
                 };
 
-                let url = `${ngrokUrl}/api/parafusos?`;
+                let url = `${apiUrl}/parafusos?`;
                 if (filtro.nome) {
                     url += `nome=${filtro.nome}&`;
                 }

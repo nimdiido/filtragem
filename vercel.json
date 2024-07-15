@@ -1,8 +1,24 @@
 {
-    "rewrites": [
-        {
-            "source": "/api/(.*)",
-            "destination": "http://192.168.0.7:3000/api/$1"
-        }
+    "version": 2,
+    "builds": [
+      {
+        "src": "api/*.js",
+        "use": "@vercel/node"
+      },
+      {
+        "src": "index.html",
+        "use": "@vercel/static"
+      },
+      {
+        "src": "styles.css",
+        "use": "@vercel/static"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/api/(.*)",
+        "dest": "/api/$1.js"
+      }
     ]
-}
+  }
+  
