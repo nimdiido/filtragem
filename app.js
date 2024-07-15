@@ -123,6 +123,62 @@ app.get('/api/modelos', (req, res) => {
   });
 });
 
+app.get('/api/roscas', (req, res) => {
+  const query = 'SELECT DISTINCT rosca FROM parafusos';
+
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error('Erro ao executar consulta:', err);
+      res.status(500).json({ error: 'Erro ao buscar roscas disponíveis' });
+      return;
+    }
+    const roscas = results.map(result => result.rosca);
+    res.json(roscas);
+  });
+});
+
+app.get('/api/materiais', (req, res) => {
+  const query = 'SELECT DISTINCT material FROM parafusos';
+
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error('Erro ao executar consulta:', err);
+      res.status(500).json({ error: 'Erro ao buscar materiais disponíveis' });
+      return;
+    }
+    const materiais = results.map(result => result.material);
+    res.json(materiais);
+  });
+});
+
+app.get('/api/hastes', (req, res) => {
+  const query = 'SELECT DISTINCT haste FROM parafusos';
+
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error('Erro ao executar consulta:', err);
+      res.status(500).json({ error: 'Erro ao buscar hastes disponíveis' });
+      return;
+    }
+    const hastes = results.map(result => result.haste);
+    res.json(hastes);
+  });
+});
+
+app.get('/api/classes', (req, res) => {
+  const query = 'SELECT DISTINCT classe FROM parafusos';
+
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error('Erro ao executar consulta:', err);
+      res.status(500).json({ error: 'Erro ao buscar classes disponíveis' });
+      return;
+    }
+    const classes = results.map(result => result.classe);
+    res.json(classes);
+  });
+});
+
 app.listen(port, '0.0.0.0', () => {
   const networkInterfaces = os.networkInterfaces();
   const ipv4Interfaces = Object.values(networkInterfaces).flat().filter(net => net.family === 'IPv4' && !net.internal);

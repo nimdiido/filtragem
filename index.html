@@ -89,7 +89,7 @@
             const materialFilter = document.getElementById('material-filter');
             const classeFilter = document.getElementById('classe-filter');
 
-            const apiUrl = '/api'; // O Vercel irá resolver isso automaticamente
+            const ipAddress = location.hostname;
 
             function carregarOpcoes(url, dropdown) {
                 fetch(url)
@@ -107,14 +107,14 @@
                     });
             }
 
-            carregarOpcoes(`${apiUrl}/comprimentos`, comprimentoFilter);
-            carregarOpcoes(`${apiUrl}/bitolas`, bitolaFilter);
-            carregarOpcoes(`${apiUrl}/acabamentos`, acabamentoFilter);
-            carregarOpcoes(`${apiUrl}/modelos`, modeloFilter);
-            carregarOpcoes(`${apiUrl}/roscas`, roscaFilter);
-            carregarOpcoes(`${apiUrl}/hastes`, hasteFilter);
-            carregarOpcoes(`${apiUrl}/materiais`, materialFilter);
-            carregarOpcoes(`${apiUrl}/classes`, classeFilter);
+            carregarOpcoes(`http://${ipAddress}:3000/api/comprimentos`, comprimentoFilter);
+            carregarOpcoes(`http://${ipAddress}:3000/api/bitolas`, bitolaFilter);
+            carregarOpcoes(`http://${ipAddress}:3000/api/acabamentos`, acabamentoFilter);
+            carregarOpcoes(`http://${ipAddress}:3000/api/modelos`, modeloFilter);
+            carregarOpcoes(`http://${ipAddress}:3000/api/roscas`, roscaFilter);
+            carregarOpcoes(`http://${ipAddress}:3000/api/hastes`, hasteFilter);
+            carregarOpcoes(`http://${ipAddress}:3000/api/materiais`, materialFilter);
+            carregarOpcoes(`http://${ipAddress}:3000/api/classes`, classeFilter);
 
             const filtrarBtn = document.getElementById('filtrar-btn');
             filtrarBtn.addEventListener('click', () => {
@@ -130,7 +130,7 @@
                     classe: classeFilter.value
                 };
 
-                let url = `${apiUrl}/parafusos?`;
+                let url = `http://${ipAddress}:3000/api/parafusos?`;
                 if (filtro.nome) {
                     url += `nome=${filtro.nome}&`;
                 }
