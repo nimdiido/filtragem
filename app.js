@@ -128,7 +128,7 @@ app.get('/api/modelos', (req, res) => {
   });
 });
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   const networkInterfaces = os.networkInterfaces();
   const ipv4Interfaces = Object.values(networkInterfaces).flat().filter(net => net.family === 'IPv4' && !net.internal);
   const ipAddress = ipv4Interfaces.length > 0 ? ipv4Interfaces[0].address : 'localhost';
