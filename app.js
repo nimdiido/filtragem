@@ -30,8 +30,9 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/parafusos', (req, res) => {
-  const { nome, comprimento, bitola, acabamento, modelo, rosca, haste, material, classe } = req.query;
+  const { nome, comprimento, bitola, acabamento, modelo, rosca, haste, material, classe, page = 1, limit = 5 } = req.query;
   let query = 'SELECT * FROM parafusos WHERE 1';
+  const offset = (page - 1) * limit;
 
   if (nome) {
     const terms = nome.split(' ');
@@ -63,6 +64,8 @@ app.get('/api/parafusos', (req, res) => {
     query += ` AND classe = '${classe}'`;
   }
 
+  query += ` LIMIT ${limit} OFFSET ${offset}`;
+
   connection.query(query, (err, results) => {
     if (err) {
       console.error('Erro ao executar consulta:', err);
@@ -75,112 +78,104 @@ app.get('/api/parafusos', (req, res) => {
 
 app.get('/api/comprimentos', (req, res) => {
   const query = 'SELECT DISTINCT comprimento FROM parafusos';
-
   connection.query(query, (err, results) => {
     if (err) {
       console.error('Erro ao executar consulta:', err);
       res.status(500).json({ error: 'Erro ao buscar comprimentos disponíveis' });
       return;
     }
-    const comprimentos = results.map(result => result.comprimento);
+    const comprimentos = results.map(row => row.comprimento);
     res.json(comprimentos);
   });
 });
 
 app.get('/api/bitolas', (req, res) => {
   const query = 'SELECT DISTINCT bitola FROM parafusos';
-
   connection.query(query, (err, results) => {
     if (err) {
       console.error('Erro ao executar consulta:', err);
       res.status(500).json({ error: 'Erro ao buscar bitolas disponíveis' });
       return;
     }
-    const bitolas = results.map(result => result.bitola);
+    const bitolas = results.map(row => row.bitola);
     res.json(bitolas);
   });
 });
 
 app.get('/api/acabamentos', (req, res) => {
   const query = 'SELECT DISTINCT acabamento FROM parafusos';
-
   connection.query(query, (err, results) => {
     if (err) {
       console.error('Erro ao executar consulta:', err);
       res.status(500).json({ error: 'Erro ao buscar acabamentos disponíveis' });
       return;
     }
-    const acabamentos = results.map(result => result.acabamento);
+    const acabamentos = results.map(row => row.acabamento);
     res.json(acabamentos);
   });
 });
 
 app.get('/api/modelos', (req, res) => {
   const query = 'SELECT DISTINCT modelo FROM parafusos';
-
   connection.query(query, (err, results) => {
     if (err) {
       console.error('Erro ao executar consulta:', err);
       res.status(500).json({ error: 'Erro ao buscar modelos disponíveis' });
       return;
     }
-    const modelos = results.map(result => result.modelo);
+    const modelos = results.map(row => row.modelo);
     res.json(modelos);
   });
 });
 
 app.get('/api/roscas', (req, res) => {
   const query = 'SELECT DISTINCT rosca FROM parafusos';
-
   connection.query(query, (err, results) => {
     if (err) {
       console.error('Erro ao executar consulta:', err);
       res.status(500).json({ error: 'Erro ao buscar roscas disponíveis' });
       return;
     }
-    const roscas = results.map(result => result.rosca);
+    const roscas = results.map(row => row.rosca);
     res.json(roscas);
-  });
-});
-
-app.get('/api/materiais', (req, res) => {
-  const query = 'SELECT DISTINCT material FROM parafusos';
-
-  connection.query(query, (err, results) => {
-    if (err) {
-      console.error('Erro ao executar consulta:', err);
-      res.status(500).json({ error: 'Erro ao buscar materiais disponíveis' });
-      return;
-    }
-    const materiais = results.map(result => result.material);
-    res.json(materiais);
   });
 });
 
 app.get('/api/hastes', (req, res) => {
   const query = 'SELECT DISTINCT haste FROM parafusos';
-
   connection.query(query, (err, results) => {
     if (err) {
       console.error('Erro ao executar consulta:', err);
       res.status(500).json({ error: 'Erro ao buscar hastes disponíveis' });
       return;
     }
-    const hastes = results.map(result => result.haste);
+    const hastes = results.map(row => row.haste);
     res.json(hastes);
+  });
+});
+
+app.get('/api/materiais', (req, res) => {
+  const query = 'SELECT DISTINCT material FROM parafusos';
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error('Erro ao executar consulta:', err);
+      res.status(500).json({ error: 'Erro ao buscar materiais disponíveis' });
+      return;
+    }
+    const materiais = results.map(row => row.material);
+    res.json(materiais);
   });
 });
 
 app.get('/api/classes', (req, res) => {
   const query = 'SELECT DISTINCT classe FROM parafusos';
-
   connection.query(query, (err, results) => {
     if (err) {
       console.error('Erro ao executar consulta:', err);
       res.status(500).json({ error: 'Erro ao buscar classes disponíveis' });
       return;
     }
-    const classes = results.map(result => result.classe);
+    const classes = results.map(row => row.classe);
     res.json(classes);
   });
 });

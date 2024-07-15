@@ -21,37 +21,38 @@
             </div>
 
             <div class="filter-row">
-                <label for="comprimento-filter">Comprimento:</label>
-                <select id="comprimento-filter">
-                    <option value="">Não especificado</option>
-                </select>
-
-                <label for="bitola-filter">Bitola:</label>
-                <select id="bitola-filter">
-                    <option value="">Não especificado</option>
-                </select>
-            </div>
-
-            <div class="filter-row">
-                <label for="acabamento-filter">Acabamento:</label>
-                <select id="acabamento-filter">
-                    <option value="">Não especificado</option>
-                </select>
-
                 <label for="modelo-filter">Modelo:</label>
                 <select id="modelo-filter">
                     <option value="">Não especificado</option>
                 </select>
-            </div>
 
-            <div class="filter-row">
                 <label for="rosca-filter">Rosca:</label>
                 <select id="rosca-filter">
                     <option value="">Não especificado</option>
                 </select>
+            </div>
 
+            <div class="filter-row">
+                <label for="bitola-filter">Bitola:</label>
+                <select id="bitola-filter">
+                    <option value="">Não especificado</option>
+                </select>
+
+                <label for="comprimento-filter">Comprimento:</label>
+                <select id="comprimento-filter">
+                    <option value="">Não especificado</option>
+                </select>
+            </div>
+
+
+            <div class="filter-row">
                 <label for="haste-filter">RI / RP:</label>
                 <select id="haste-filter">
+                    <option value="">Não especificado</option>
+                </select>
+
+                <label for="acabamento-filter">Acabamento:</label>
+                <select id="acabamento-filter">
                     <option value="">Não especificado</option>
                 </select>
             </div>
@@ -75,6 +76,9 @@
         <ul id="parafusos-list">
             <!-- Os itens serão adicionados aqui -->
         </ul>
+
+        <!-- Botão de Mostrar Mais -->
+        <button id="mostrar-mais-btn" style="display: none;">Mostrar mais</button>
     </div>
 
     <script>
@@ -91,10 +95,18 @@
 
             const ipAddress = location.hostname;
 
-            function carregarOpcoes(url, dropdown) {
+            function carregarOpcoes(url, dropdown, ordenar = null) {
                 fetch(url)
                     .then(response => response.json())
                     .then(data => {
+                        if (ordenar) {
+                            data.sort(ordenar);
+                        } else {
+                            data.sort();
+                        }
+
+                        dropdown.innerHTML = '<option value="">Não especificado</option>';
+
                         data.forEach(opcao => {
                             const option = document.createElement('option');
                             option.textContent = opcao;
@@ -107,8 +119,24 @@
                     });
             }
 
-            carregarOpcoes(`http://${ipAddress}:3000/api/comprimentos`, comprimentoFilter);
-            carregarOpcoes(`http://${ipAddress}:3000/api/bitolas`, bitolaFilter);
+            function ordenarComprimentos(a, b) {
+                const ordem = [
+                    '2.1/2"', '3/4"', '1"', '1.1/2"', '2"', '3"', '4"', '5"', '6"', '7"',
+                    '10mm', '20mm', '30mm', '40mm', '50mm', '60mm', '70mm'
+                ];
+                return ordem.indexOf(a) - ordem.indexOf(b);
+            }
+
+            function ordenarBitolas(a, b) {
+                const ordemBitolas = [
+                    '1/8"', '3/16"', '1/4"', '5/16"', '3/8"', '7/16"', '1/2"', '9/16"', '5/8"', '3/4"', '7/8"', '1"', '1.1/4"', '1.1/2"', '2"', '2.1/2"', '3"', '4"', '5"', '6"',
+                    '3mm', '4mm', '5mm', '6mm', '8mm', '10mm', '12mm', '16mm', '20mm', '24mm', '30mm', '36mm', '40mm', '50mm', '60mm', '70mm'
+                ];
+                return ordemBitolas.indexOf(a) - ordemBitolas.indexOf(b);
+            }
+
+            carregarOpcoes(`http://${ipAddress}:3000/api/comprimentos`, comprimentoFilter, ordenarComprimentos);
+            carregarOpcoes(`http://${ipAddress}:3000/api/bitolas`, bitolaFilter, ordenarBitolas);
             carregarOpcoes(`http://${ipAddress}:3000/api/acabamentos`, acabamentoFilter);
             carregarOpcoes(`http://${ipAddress}:3000/api/modelos`, modeloFilter);
             carregarOpcoes(`http://${ipAddress}:3000/api/roscas`, roscaFilter);
@@ -116,8 +144,12 @@
             carregarOpcoes(`http://${ipAddress}:3000/api/materiais`, materialFilter);
             carregarOpcoes(`http://${ipAddress}:3000/api/classes`, classeFilter);
 
+            let currentPage = 1;
+
             const filtrarBtn = document.getElementById('filtrar-btn');
-            filtrarBtn.addEventListener('click', () => {
+            const mostrarMaisBtn = document.getElementById('mostrar-mais-btn');
+
+            function buscarParafusos(page = 1) {
                 const filtro = {
                     nome: nomeFilter.value,
                     comprimento: comprimentoFilter.value,
@@ -127,61 +159,52 @@
                     rosca: roscaFilter.value,
                     haste: hasteFilter.value,
                     material: materialFilter.value,
-                    classe: classeFilter.value
+                    classe: classeFilter.value,
+                    page,
+                    limit: 5
                 };
 
                 let url = `http://${ipAddress}:3000/api/parafusos?`;
-                if (filtro.nome) {
-                    url += `nome=${filtro.nome}&`;
-                }
-                if (filtro.comprimento) {
-                    url += `comprimento=${filtro.comprimento}&`;
-                }
-                if (filtro.bitola) {
-                    url += `bitola=${filtro.bitola}&`;
-                }
-                if (filtro.acabamento) {
-                    url += `acabamento=${filtro.acabamento}&`;
-                }
-                if (filtro.modelo) {
-                    url += `modelo=${filtro.modelo}&`;
-                }
-                if (filtro.rosca) {
-                    url += `rosca=${filtro.rosca}&`;
-                }
-                if (filtro.haste) {
-                    url += `haste=${filtro.haste}&`;
-                }
-                if (filtro.material) {
-                    url += `material=${filtro.material}&`;
-                }
-                if (filtro.classe) {
-                    url += `classe=${filtro.classe}&`;
-                }
+                Object.keys(filtro).forEach(key => {
+                    if (filtro[key]) {
+                        url += `${key}=${filtro[key]}&`;
+                    }
+                });
 
                 fetch(url)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Não foi possível carregar os parafusos');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
+                    .then(response => response.json())
+                    .then(parafusos => {
                         const parafusosList = document.getElementById('parafusos-list');
-                        parafusosList.innerHTML = '';
 
-                        data.forEach(parafuso => {
-                            const parafusoItem = document.createElement('li');
-                            parafusoItem.textContent = `${parafuso.referencia} — ${parafuso.nome}`;
-                            parafusosList.appendChild(parafusoItem);
+                        if (page === 1) {
+                            parafusosList.innerHTML = '';
+                        }
+
+                        parafusos.forEach(parafuso => {
+                            const listItem = document.createElement('li');
+                            listItem.textContent = `${parafuso.referencia} — ${parafuso.nome}`;
+                            parafusosList.appendChild(listItem);
                         });
+
+                        if (parafusos.length < 5) {
+                            mostrarMaisBtn.style.display = 'none';
+                        } else {
+                            mostrarMaisBtn.style.display = 'block';
+                        }
                     })
                     .catch(error => {
                         console.error('Erro ao buscar parafusos:', error);
-                        const errorElement = document.createElement('p');
-                        errorElement.textContent = 'Erro ao carregar parafusos. Por favor, tente novamente mais tarde.';
-                        document.body.appendChild(errorElement);
                     });
+            }
+
+            filtrarBtn.addEventListener('click', () => {
+                currentPage = 1;
+                buscarParafusos(currentPage);
+            });
+
+            mostrarMaisBtn.addEventListener('click', () => {
+                currentPage++;
+                buscarParafusos(currentPage);
             });
         });
     </script>
