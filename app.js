@@ -1,12 +1,13 @@
 const express = require('express');
 const mysql = require('mysql');
 const cors = require('cors');
+const os = require('os');
 
 const app = express();
-const port = 3306;
+const port = 3000;
 
 const connection = mysql.createConnection({
-  host: '192.168.0.6',
+  host: 'localhost',
   user: 'root',
   password: 'ferrero441',
   database: 'produtosdb'
@@ -22,7 +23,7 @@ connection.connect(err => {
 
 app.use(cors());
 
-// buscar parafusos filtrados
+// Buscar parafusos filtrados
 app.get('/api/parafusos', (req, res) => {
   const { nome, comprimento, bitola, acabamento, modelo, rosca, haste, material, classe } = req.query;
   let query = 'SELECT * FROM parafusos WHERE 1';
@@ -67,10 +68,7 @@ app.get('/api/parafusos', (req, res) => {
   });
 });
 
-
-
-
-// recuperar comprimentos disponíveis
+// Recuperar comprimentos disponíveis
 app.get('/api/comprimentos', (req, res) => {
   const query = 'SELECT DISTINCT comprimento FROM parafusos';
 
@@ -85,7 +83,7 @@ app.get('/api/comprimentos', (req, res) => {
   });
 });
 
-// recuperar bitolas disponíveis
+// Recuperar bitolas disponíveis
 app.get('/api/bitolas', (req, res) => {
   const query = 'SELECT DISTINCT bitola FROM parafusos';
 
@@ -100,7 +98,7 @@ app.get('/api/bitolas', (req, res) => {
   });
 });
 
-// recuperar acabamentos disponíveis
+// Recuperar acabamentos disponíveis
 app.get('/api/acabamentos', (req, res) => {
   const query = 'SELECT DISTINCT acabamento FROM parafusos';
 
@@ -115,7 +113,7 @@ app.get('/api/acabamentos', (req, res) => {
   });
 });
 
-// recuperar modelos disponíveis
+// Recuperar modelos disponíveis
 app.get('/api/modelos', (req, res) => {
   const query = 'SELECT DISTINCT modelo FROM parafusos';
 
@@ -130,66 +128,9 @@ app.get('/api/modelos', (req, res) => {
   });
 });
 
-// recuperar roscas disponíveis
-app.get('/api/roscas', (req, res) => {
-  const query = 'SELECT DISTINCT rosca FROM parafusos';
-
-  connection.query(query, (err, results) => {
-    if (err) {
-      console.error('Erro ao executar consulta:', err);
-      res.status(500).json({ error: 'Erro ao buscar roscas disponíveis' });
-      return;
-    }
-    const roscas = results.map(result => result.rosca);
-    res.json(roscas);
-  });
-});
-
-// recuperar hastes disponíveis
-app.get('/api/hastes', (req, res) => {
-  const query = 'SELECT DISTINCT haste FROM parafusos';
-
-  connection.query(query, (err, results) => {
-    if (err) {
-      console.error('Erro ao executar consulta:', err);
-      res.status(500).json({ error: 'Erro ao buscar hastes disponíveis' });
-      return;
-    }
-    const hastes = results.map(result => result.haste);
-    res.json(hastes);
-  });
-});
-
-// recuperar materiais disponíveis
-app.get('/api/materiais', (req, res) => {
-  const query = 'SELECT DISTINCT material FROM parafusos';
-
-  connection.query(query, (err, results) => {
-    if (err) {
-      console.error('Erro ao executar consulta:', err);
-      res.status(500).json({ error: 'Erro ao buscar materiais disponíveis' });
-      return;
-    }
-    const materiais = results.map(result => result.material);
-    res.json(materiais);
-  });
-});
-
-// recuperar classes disponíveis
-app.get('/api/classes', (req, res) => {
-  const query = 'SELECT DISTINCT classe FROM parafusos';
-
-  connection.query(query, (err, results) => {
-    if (err) {
-      console.error('Erro ao executar consulta:', err);
-      res.status(500).json({ error: 'Erro ao buscar classes disponíveis' });
-      return;
-    }
-    const classes = results.map(result => result.classe);
-    res.json(classes);
-  });
-});
-
 app.listen(port, () => {
-  console.log(`Servidor iniciado em http://localhost:${port}`);
+  const networkInterfaces = os.networkInterfaces();
+  const ipv4Interfaces = Object.values(networkInterfaces).flat().filter(net => net.family === 'IPv4' && !net.internal);
+  const ipAddress = ipv4Interfaces.length > 0 ? ipv4Interfaces[0].address : 'localhost';
+  console.log(`Servidor rodando em http://${ipAddress}:${port}`);
 });
