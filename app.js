@@ -1,43 +1,57 @@
-require('dotenv').config();
-const express = require('express');
-const mysql = require('mysql');
-const cors = require('cors');
-const os = require('os');
-const path = require('path');
+require("dotenv").config();
+const express = require("express");
+const mysql = require("mysql");
+const cors = require("cors");
+const os = require("os");
+const path = require("path");
 
 const app = express();
 const port = process.env.PORT || 3000;
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
 const connection = mysql.createConnection({
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'produtosdb'
+  host: process.env.DB_HOST || "localhost",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "",
+  database: process.env.DB_NAME || "produtosdb",
 });
 
-connection.connect(err => {
+connection.connect((err) => {
   if (err) {
-    console.error('Erro ao conectar ao MySQL:', err);
+    console.error("Erro ao conectar ao MySQL:", err);
     return;
   }
-  console.log('Conectado ao MySQL com sucesso!');
+  console.log("Conectado ao MySQL com sucesso!");
 });
 
 app.use(cors());
 
-app.get('/', (req, res) => {
-  res.send('Bem-vindo! Este é o servidor da lista de parafusos.');
+app.get("/", (req, res) => {
+  res.send("Bem-vindo! Este é o servidor da lista de parafusos.");
 });
 
-app.get('/api/parafusos', (req, res) => {
-  const { nome, comprimento, bitola, acabamento, modelo, rosca, haste, material, classe, page = 1, limit = 5 } = req.query;
-  let query = 'SELECT * FROM parafusos WHERE 1';
+app.get("/api/parafusos", (req, res) => {
+  const {
+    nome,
+    comprimento,
+    bitola,
+    acabamento,
+    modelo,
+    rosca,
+    haste,
+    material,
+    classe,
+    page = 1,
+    limit = 5,
+  } = req.query;
+  let query = "SELECT * FROM parafusos WHERE 1";
   const offset = (page - 1) * limit;
 
   if (nome) {
-    const terms = nome.split(' ');
-    const likeClauses = terms.map(term => `nome LIKE '%${term}%'`).join(' AND ');
+    const terms = nome.split(" ");
+    const likeClauses = terms
+      .map((term) => `nome LIKE '%${term}%'`)
+      .join(" AND ");
     query += ` AND (${likeClauses})`;
   }
   if (comprimento) {
@@ -69,121 +83,126 @@ app.get('/api/parafusos', (req, res) => {
 
   connection.query(query, (err, results) => {
     if (err) {
-      console.error('Erro ao executar consulta:', err);
-      res.status(500).json({ error: 'Erro ao buscar parafusos' });
+      console.error("Erro ao executar consulta:", err);
+      res.status(500).json({ error: "Erro ao buscar parafusos" });
       return;
     }
     res.json(results);
   });
 });
 
-app.get('/api/comprimentos', (req, res) => {
-  const query = 'SELECT DISTINCT comprimento FROM parafusos';
+app.get("/api/comprimentos", (req, res) => {
+  const query = "SELECT DISTINCT comprimento FROM parafusos";
   connection.query(query, (err, results) => {
     if (err) {
-      console.error('Erro ao executar consulta:', err);
-      res.status(500).json({ error: 'Erro ao buscar comprimentos disponíveis' });
+      console.error("Erro ao executar consulta:", err);
+      res
+        .status(500)
+        .json({ error: "Erro ao buscar comprimentos disponíveis" });
       return;
     }
-    const comprimentos = results.map(row => row.comprimento);
+    const comprimentos = results.map((row) => row.comprimento);
     res.json(comprimentos);
   });
 });
 
-app.get('/api/bitolas', (req, res) => {
-  const query = 'SELECT DISTINCT bitola FROM parafusos';
+app.get("/api/bitolas", (req, res) => {
+  const query = "SELECT DISTINCT bitola FROM parafusos";
   connection.query(query, (err, results) => {
     if (err) {
-      console.error('Erro ao executar consulta:', err);
-      res.status(500).json({ error: 'Erro ao buscar bitolas disponíveis' });
+      console.error("Erro ao executar consulta:", err);
+      res.status(500).json({ error: "Erro ao buscar bitolas disponíveis" });
       return;
     }
-    const bitolas = results.map(row => row.bitola);
+    const bitolas = results.map((row) => row.bitola);
     res.json(bitolas);
   });
 });
 
-app.get('/api/acabamentos', (req, res) => {
-  const query = 'SELECT DISTINCT acabamento FROM parafusos';
+app.get("/api/acabamentos", (req, res) => {
+  const query = "SELECT DISTINCT acabamento FROM parafusos";
   connection.query(query, (err, results) => {
     if (err) {
-      console.error('Erro ao executar consulta:', err);
-      res.status(500).json({ error: 'Erro ao buscar acabamentos disponíveis' });
+      console.error("Erro ao executar consulta:", err);
+      res.status(500).json({ error: "Erro ao buscar acabamentos disponíveis" });
       return;
     }
-    const acabamentos = results.map(row => row.acabamento);
+    const acabamentos = results.map((row) => row.acabamento);
     res.json(acabamentos);
   });
 });
 
-app.get('/api/modelos', (req, res) => {
-  const query = 'SELECT DISTINCT modelo FROM parafusos';
+app.get("/api/modelos", (req, res) => {
+  const query = "SELECT DISTINCT modelo FROM parafusos";
   connection.query(query, (err, results) => {
     if (err) {
-      console.error('Erro ao executar consulta:', err);
-      res.status(500).json({ error: 'Erro ao buscar modelos disponíveis' });
+      console.error("Erro ao executar consulta:", err);
+      res.status(500).json({ error: "Erro ao buscar modelos disponíveis" });
       return;
     }
-    const modelos = results.map(row => row.modelo);
+    const modelos = results.map((row) => row.modelo);
     res.json(modelos);
   });
 });
 
-app.get('/api/roscas', (req, res) => {
-  const query = 'SELECT DISTINCT rosca FROM parafusos';
+app.get("/api/roscas", (req, res) => {
+  const query = "SELECT DISTINCT rosca FROM parafusos";
   connection.query(query, (err, results) => {
     if (err) {
-      console.error('Erro ao executar consulta:', err);
-      res.status(500).json({ error: 'Erro ao buscar roscas disponíveis' });
+      console.error("Erro ao executar consulta:", err);
+      res.status(500).json({ error: "Erro ao buscar roscas disponíveis" });
       return;
     }
-    const roscas = results.map(row => row.rosca);
+    const roscas = results.map((row) => row.rosca);
     res.json(roscas);
   });
 });
 
-app.get('/api/hastes', (req, res) => {
-  const query = 'SELECT DISTINCT haste FROM parafusos';
+app.get("/api/hastes", (req, res) => {
+  const query = "SELECT DISTINCT haste FROM parafusos";
   connection.query(query, (err, results) => {
     if (err) {
-      console.error('Erro ao executar consulta:', err);
-      res.status(500).json({ error: 'Erro ao buscar hastes disponíveis' });
+      console.error("Erro ao executar consulta:", err);
+      res.status(500).json({ error: "Erro ao buscar hastes disponíveis" });
       return;
     }
-    const hastes = results.map(row => row.haste);
+    const hastes = results.map((row) => row.haste);
     res.json(hastes);
   });
 });
 
-app.get('/api/materiais', (req, res) => {
-  const query = 'SELECT DISTINCT material FROM parafusos';
+app.get("/api/materiais", (req, res) => {
+  const query = "SELECT DISTINCT material FROM parafusos";
   connection.query(query, (err, results) => {
     if (err) {
-      console.error('Erro ao executar consulta:', err);
-      res.status(500).json({ error: 'Erro ao buscar materiais disponíveis' });
+      console.error("Erro ao executar consulta:", err);
+      res.status(500).json({ error: "Erro ao buscar materiais disponíveis" });
       return;
     }
-    const materiais = results.map(row => row.material);
+    const materiais = results.map((row) => row.material);
     res.json(materiais);
   });
 });
 
-app.get('/api/classes', (req, res) => {
-  const query = 'SELECT DISTINCT classe FROM parafusos';
+app.get("/api/classes", (req, res) => {
+  const query = "SELECT DISTINCT classe FROM parafusos";
   connection.query(query, (err, results) => {
     if (err) {
-      console.error('Erro ao executar consulta:', err);
-      res.status(500).json({ error: 'Erro ao buscar classes disponíveis' });
+      console.error("Erro ao executar consulta:", err);
+      res.status(500).json({ error: "Erro ao buscar classes disponíveis" });
       return;
     }
-    const classes = results.map(row => row.classe);
+    const classes = results.map((row) => row.classe);
     res.json(classes);
   });
 });
 
-app.listen(port, '0.0.0.0', () => {
+app.listen(port, "0.0.0.0", () => {
   const networkInterfaces = os.networkInterfaces();
-  const ipv4Interfaces = Object.values(networkInterfaces).flat().filter(net => net.family === 'IPv4' && !net.internal);
-  const ipAddress = ipv4Interfaces.length > 0 ? ipv4Interfaces[0].address : 'localhost';
+  const ipv4Interfaces = Object.values(networkInterfaces)
+    .flat()
+    .filter((net) => net.family === "IPv4" && !net.internal);
+  const ipAddress =
+    ipv4Interfaces.length > 0 ? ipv4Interfaces[0].address : "localhost";
   console.log(`Servidor rodando em http://${ipAddress}:${port}`);
 });

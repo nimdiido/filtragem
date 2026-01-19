@@ -49,6 +49,7 @@ Em ambientes industriais, localizar o parafuso correto em um catálogo extenso p
 ## 🛠️ Tecnologias Utilizadas
 
 ### Backend
+
 - **Node.js** - Runtime JavaScript
 - **Express.js** - Framework web minimalista
 - **MySQL** - Banco de dados relacional
@@ -56,6 +57,7 @@ Em ambientes industriais, localizar o parafuso correto em um catálogo extenso p
 - **dotenv** - Gerenciamento de variáveis de ambiente
 
 ### Frontend
+
 - **HTML5** - Estrutura semântica
 - **CSS3** - Estilização responsiva
 - **JavaScript** - Interatividade e consumo de API
@@ -73,28 +75,34 @@ Em ambientes industriais, localizar o parafuso correto em um catálogo extenso p
 ### Passo a Passo
 
 1. **Clone o repositório**
+
    ```bash
    git clone https://github.com/seu-usuario/sistema-filtragem-parafusos.git
    cd sistema-filtragem-parafusos
    ```
 
 2. **Instale as dependências**
+
    ```bash
    npm install
    ```
 
 3. **Configure o banco de dados**
+
    ```bash
    mysql -u root -p < database/schema.sql
    ```
 
 4. **Configure as variáveis de ambiente**
+
    ```bash
    cp .env.example .env
    ```
+
    Edite o arquivo `.env` com suas credenciais do MySQL.
 
 5. **Inicie o servidor**
+
    ```bash
    npm start
    ```
@@ -142,17 +150,17 @@ O servidor é configurado para aceitar conexões de outros dispositivos na mesma
 
 ### Endpoints Disponíveis
 
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| GET | `/api/parafusos` | Lista parafusos com filtros |
-| GET | `/api/comprimentos` | Lista comprimentos disponíveis |
-| GET | `/api/bitolas` | Lista bitolas disponíveis |
-| GET | `/api/acabamentos` | Lista acabamentos disponíveis |
-| GET | `/api/modelos` | Lista modelos disponíveis |
-| GET | `/api/roscas` | Lista tipos de rosca |
-| GET | `/api/hastes` | Lista tipos de haste |
-| GET | `/api/materiais` | Lista materiais disponíveis |
-| GET | `/api/classes` | Lista classes disponíveis |
+| Método | Endpoint            | Descrição                      |
+| ------ | ------------------- | ------------------------------ |
+| GET    | `/api/parafusos`    | Lista parafusos com filtros    |
+| GET    | `/api/comprimentos` | Lista comprimentos disponíveis |
+| GET    | `/api/bitolas`      | Lista bitolas disponíveis      |
+| GET    | `/api/acabamentos`  | Lista acabamentos disponíveis  |
+| GET    | `/api/modelos`      | Lista modelos disponíveis      |
+| GET    | `/api/roscas`       | Lista tipos de rosca           |
+| GET    | `/api/hastes`       | Lista tipos de haste           |
+| GET    | `/api/materiais`    | Lista materiais disponíveis    |
+| GET    | `/api/classes`      | Lista classes disponíveis      |
 
 ### Parâmetros de Busca
 
@@ -160,19 +168,19 @@ O servidor é configurado para aceitar conexões de outros dispositivos na mesma
 GET /api/parafusos?nome=sextavado&bitola=8mm&page=1&limit=5
 ```
 
-| Parâmetro | Tipo | Descrição |
-|-----------|------|-----------|
-| `nome` | string | Busca por nome (aceita múltiplos termos) |
-| `comprimento` | string | Filtro por comprimento |
-| `bitola` | string | Filtro por bitola |
-| `acabamento` | string | Filtro por acabamento |
-| `modelo` | string | Filtro por modelo |
-| `rosca` | string | Filtro por tipo de rosca |
-| `haste` | string | Filtro por tipo de haste |
-| `material` | string | Filtro por material |
-| `classe` | string | Filtro por classe |
-| `page` | number | Número da página (padrão: 1) |
-| `limit` | number | Itens por página (padrão: 5) |
+| Parâmetro     | Tipo   | Descrição                                |
+| ------------- | ------ | ---------------------------------------- |
+| `nome`        | string | Busca por nome (aceita múltiplos termos) |
+| `comprimento` | string | Filtro por comprimento                   |
+| `bitola`      | string | Filtro por bitola                        |
+| `acabamento`  | string | Filtro por acabamento                    |
+| `modelo`      | string | Filtro por modelo                        |
+| `rosca`       | string | Filtro por tipo de rosca                 |
+| `haste`       | string | Filtro por tipo de haste                 |
+| `material`    | string | Filtro por material                      |
+| `classe`      | string | Filtro por classe                        |
+| `page`        | number | Número da página (padrão: 1)             |
+| `limit`       | number | Itens por página (padrão: 5)             |
 
 ---
 
